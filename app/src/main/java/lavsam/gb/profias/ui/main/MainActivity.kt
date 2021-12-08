@@ -1,13 +1,9 @@
 package lavsam.gb.profias.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.AndroidInjection
 import lavsam.gb.profias.R
 import lavsam.gb.profias.databinding.ActivityMainBinding
 import lavsam.gb.profias.interactor.MainInteractor
@@ -17,12 +13,13 @@ import lavsam.gb.profias.ui.BaseActivity
 import lavsam.gb.profias.ui.SearchDialogFragment
 import lavsam.gb.profias.utils.network.isOnline
 import lavsam.gb.profias.viewmodel.MainActivityViewModel
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+private const val SHOW_PROGRESS_BAR = true
+private const val HIDE_PROGRESS_BAR = false
 
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: ActivityMainBinding
     override lateinit var model: MainActivityViewModel
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
@@ -51,16 +48,16 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        AndroidInjection.inject(this)
-
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        model = viewModelFactory.create(MainActivityViewModel::class.java)
-        model.subscribe().observe(this@MainActivity, Observer<AppState> { renderData(it) })
+        if (binding.mainActivityRecyclerview.adapter != null) {
+            throw IllegalStateException(getString(R.string.ErrorViewModelInit))
+        }
+        val viewModel: MainActivityViewModel by viewModel()
+        model = viewModel
+        model.subscribe().observe(this@MainActivity, { renderData(it) })
 
         binding.searchFab.setOnClickListener(fabClickListener)
         binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
@@ -70,7 +67,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     override fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
-                showViewWorking()
+                showProgressBar(HIDE_PROGRESS_BAR)
                 val data = appState.data
                 if (data.isNullOrEmpty()) {
                     showAlertDialog(
@@ -82,7 +79,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                 }
             }
             is AppState.Loading -> {
-                showViewLoading()
+                showProgressBar(SHOW_PROGRESS_BAR)
                 if (appState.progress != null) {
                     binding.progressBarHorizontal.visibility = View.VISIBLE
                     binding.progressBarRound.visibility = View.GONE
@@ -93,18 +90,16 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                 }
             }
             is AppState.Error -> {
-                showViewWorking()
+                showProgressBar(HIDE_PROGRESS_BAR)
                 showAlertDialog(getString(R.string.error_stub), appState.error.message)
             }
         }
     }
 
-    private fun showViewWorking() {
-        binding.loadingFrameLayout.visibility = View.GONE
-    }
-
-    private fun showViewLoading() {
+    private fun showProgressBar(show: Boolean) = if (show) {
         binding.loadingFrameLayout.visibility = View.VISIBLE
+    } else {
+        binding.loadingFrameLayout.visibility = View.GONE
     }
 
     companion object {
