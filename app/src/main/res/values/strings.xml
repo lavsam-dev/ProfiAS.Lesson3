@@ -17,4 +17,5 @@
     <string name="dialog_tittle_sorry">Sorry</string>
     <string name="error_stub">Error</string>
     <string name="ErrorViewModelInit">The ViewModel should be initialised first</string>
+    <string name="empty_text">\"\"</string>
 </resources>

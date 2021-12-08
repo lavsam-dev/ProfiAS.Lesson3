@@ -22,6 +22,7 @@ val application = module {
         )
     }
 }
+
 val mainScreen = module {
     factory { MainInteractor(get(named(NAME_REMOTE)), get(named(NAME_LOCAL))) }
     factory { MainActivityViewModel(get()) }

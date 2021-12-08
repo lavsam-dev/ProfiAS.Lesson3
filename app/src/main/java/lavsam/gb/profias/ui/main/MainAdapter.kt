@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main_recyclerview_item.view.*
 import lavsam.gb.profias.R
 import lavsam.gb.profias.model.data.Vocabulary
+import lavsam.gb.profias.utils.DiffUtils
 import lavsam.gb.profias.utils.convertMeaningsToString
 
 class MainAdapter(private var onListItemClickListener: OnListItemClickListener) :
@@ -15,10 +17,12 @@ class MainAdapter(private var onListItemClickListener: OnListItemClickListener) 
 
     private var data: List<Vocabulary> = arrayListOf()
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<Vocabulary>) {
-        this.data = data
-        notifyDataSetChanged()
+//    @SuppressLint("NotifyDataSetChanged")
+    fun setData(recievedData: List<Vocabulary>) {
+        val callback = DiffUtils(data, recievedData)
+        val result = DiffUtil.calculateDiff(callback)
+        data = recievedData
+        result.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerItemViewHolder {

@@ -15,9 +15,11 @@ import lavsam.gb.profias.utils.network.isOnline
 import lavsam.gb.profias.viewmodel.MainActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+private const val SHOW_PROGRESS_BAR = true
+private const val HIDE_PROGRESS_BAR = false
+
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
-//    internal lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: ActivityMainBinding
     override lateinit var model: MainActivityViewModel
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
@@ -46,7 +48,6 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -66,7 +67,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     override fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
-                showViewWorking()
+                showProgressBar(HIDE_PROGRESS_BAR)
                 val data = appState.data
                 if (data.isNullOrEmpty()) {
                     showAlertDialog(
@@ -78,7 +79,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                 }
             }
             is AppState.Loading -> {
-                showViewLoading()
+                showProgressBar(SHOW_PROGRESS_BAR)
                 if (appState.progress != null) {
                     binding.progressBarHorizontal.visibility = View.VISIBLE
                     binding.progressBarRound.visibility = View.GONE
@@ -89,18 +90,16 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                 }
             }
             is AppState.Error -> {
-                showViewWorking()
+                showProgressBar(HIDE_PROGRESS_BAR)
                 showAlertDialog(getString(R.string.error_stub), appState.error.message)
             }
         }
     }
 
-    private fun showViewWorking() {
-        binding.loadingFrameLayout.visibility = View.GONE
-    }
-
-    private fun showViewLoading() {
+    private fun showProgressBar(show: Boolean) = if (show) {
         binding.loadingFrameLayout.visibility = View.VISIBLE
+    } else {
+        binding.loadingFrameLayout.visibility = View.GONE
     }
 
     companion object {

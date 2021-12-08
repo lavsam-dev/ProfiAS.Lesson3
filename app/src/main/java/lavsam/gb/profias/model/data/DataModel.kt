@@ -11,9 +11,14 @@ private const val URL_IMAGE_URL = "imageUrl"
 private const val URL_TRANSLATION_TEXT = "text"
 
 class Vocabulary(
+    @SerializedName(ID_VOCABULARY) val id: Int,
     @SerializedName(URL_TEXT) val text: String?,
     @SerializedName(URL_MEANINGS) val meanings: List<Meanings>?
-)
+) {
+    companion object {
+        private const val ID_VOCABULARY = "id"
+    }
+}
 
 class Meanings(
     @SerializedName(URL_TRANSLATION) val translation: Translation?,

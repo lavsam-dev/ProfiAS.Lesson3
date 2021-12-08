@@ -1,6 +1,7 @@
 package lavsam.gb.profias.model.datasource
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import lavsam.gb.profias.BuildConfig
 import lavsam.gb.profias.model.data.Vocabulary
 import lavsam.gb.profias.model.data.api.ApiService
 import okhttp3.Interceptor
@@ -31,7 +32,9 @@ class RetrofitImplementation : DataSource<List<Vocabulary>> {
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor)
-        httpClient.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        if (BuildConfig.DEBUG) {
+            httpClient.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        }
         return httpClient.build()
     }
 

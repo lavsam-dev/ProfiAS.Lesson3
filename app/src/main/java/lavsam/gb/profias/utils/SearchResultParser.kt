@@ -29,7 +29,7 @@ private fun parseResult(dataModel: Vocabulary, newDataModels: ArrayList<Vocabula
             }
         }
         if (newMeanings.isNotEmpty()) {
-            newDataModels.add(Vocabulary(dataModel.text, newMeanings))
+            newDataModels.add(Vocabulary(System.currentTimeMillis().toInt(), dataModel.text, newMeanings))
         }
     }
 }
