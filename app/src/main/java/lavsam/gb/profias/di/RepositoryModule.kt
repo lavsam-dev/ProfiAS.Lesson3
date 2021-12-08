@@ -11,36 +11,36 @@ import lavsam.gb.profias.model.repository.RepositoryImplementation
 import javax.inject.Named
 import javax.inject.Singleton
 
-@Module
-class RepositoryModule {
-
-    @Provides
-    @Singleton
-    @Named(NAME_REMOTE)
-    internal fun provideRepositoryRemote(
-        @Named(NAME_REMOTE) dataSourceRemote:
-        DataSource<List<Vocabulary>>
-    ): Repository<List<Vocabulary>> =
-        RepositoryImplementation(dataSourceRemote)
-
-    @Provides
-    @Singleton
-    @Named(NAME_LOCAL)
-    internal fun provideRepositoryLocal(
-        @Named(NAME_LOCAL) dataSourceLocal:
-        DataSource<List<Vocabulary>>
-    ): Repository<List<Vocabulary>> =
-        RepositoryImplementation(dataSourceLocal)
-
-    @Provides
-    @Singleton
-    @Named(NAME_REMOTE)
-    internal fun provideDataSourceRemote(): DataSource<List<Vocabulary>> =
-        RetrofitImplementation()
-
-    @Provides
-    @Singleton
-    @Named(NAME_LOCAL)
-    internal fun provideDataSourceLocal(): DataSource<List<Vocabulary>> =
-        RoomDataBaseImplementation()
-}
+//@Module
+//class RepositoryModule {
+//
+//    @Provides
+//    @Singleton
+//    @Named(NAME_REMOTE)
+//    internal fun provideRepositoryRemote(
+//        @Named(NAME_REMOTE) dataSourceRemote:
+//        DataSource<List<Vocabulary>>
+//    ): Repository<List<Vocabulary>> =
+//        RepositoryImplementation(dataSourceRemote)
+//
+//    @Provides
+//    @Singleton
+//    @Named(NAME_LOCAL)
+//    internal fun provideRepositoryLocal(
+//        @Named(NAME_LOCAL) dataSourceLocal:
+//        DataSource<List<Vocabulary>>
+//    ): Repository<List<Vocabulary>> =
+//        RepositoryImplementation(dataSourceLocal)
+//
+//    @Provides
+//    @Singleton
+//    @Named(NAME_REMOTE)
+//    internal fun provideDataSourceRemote(): DataSource<List<Vocabulary>> =
+//        RetrofitImplementation()
+//
+//    @Provides
+//    @Singleton
+//    @Named(NAME_LOCAL)
+//    internal fun provideDataSourceLocal(): DataSource<List<Vocabulary>> =
+//        RoomDataBaseImplementation()
+//}

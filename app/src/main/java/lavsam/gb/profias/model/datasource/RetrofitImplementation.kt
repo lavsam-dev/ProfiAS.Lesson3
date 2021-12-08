@@ -1,7 +1,6 @@
 package lavsam.gb.profias.model.datasource
 
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import io.reactivex.Observable
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import lavsam.gb.profias.model.data.Vocabulary
 import lavsam.gb.profias.model.data.api.ApiService
 import okhttp3.Interceptor
@@ -12,8 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitImplementation : DataSource<List<Vocabulary>> {
 
-    override fun getData(word: String): Observable<List<Vocabulary>> {
-        return getService(BaseInterceptor.interceptor).search(word)
+    override suspend fun getData(word: String): List<Vocabulary> {
+        return getService(BaseInterceptor.interceptor).searchAsync(word).await()
     }
 
     private fun getService(interceptor: Interceptor): ApiService {
@@ -24,7 +23,7 @@ class RetrofitImplementation : DataSource<List<Vocabulary>> {
         return Retrofit.Builder()
             .baseUrl(BASE_URL_LOCATIONS)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(createOkHttpClient(interceptor))
             .build()
     }

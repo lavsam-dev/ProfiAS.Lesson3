@@ -1,13 +1,9 @@
 package lavsam.gb.profias.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.AndroidInjection
 import lavsam.gb.profias.R
 import lavsam.gb.profias.databinding.ActivityMainBinding
 import lavsam.gb.profias.interactor.MainInteractor
@@ -17,12 +13,11 @@ import lavsam.gb.profias.ui.BaseActivity
 import lavsam.gb.profias.ui.SearchDialogFragment
 import lavsam.gb.profias.utils.network.isOnline
 import lavsam.gb.profias.viewmodel.MainActivityViewModel
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+//    internal lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: ActivityMainBinding
     override lateinit var model: MainActivityViewModel
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
@@ -52,15 +47,16 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        AndroidInjection.inject(this)
-
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        model = viewModelFactory.create(MainActivityViewModel::class.java)
-        model.subscribe().observe(this@MainActivity, Observer<AppState> { renderData(it) })
+        if (binding.mainActivityRecyclerview.adapter != null) {
+            throw IllegalStateException(getString(R.string.ErrorViewModelInit))
+        }
+        val viewModel: MainActivityViewModel by viewModel()
+        model = viewModel
+        model.subscribe().observe(this@MainActivity, { renderData(it) })
 
         binding.searchFab.setOnClickListener(fabClickListener)
         binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
