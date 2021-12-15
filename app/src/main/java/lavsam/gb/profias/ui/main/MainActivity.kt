@@ -15,8 +15,8 @@ import lavsam.gb.profias.utils.network.isOnline
 import lavsam.gb.profias.viewmodel.MainActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val SHOW_PROGRESS_BAR = true
-private const val HIDE_PROGRESS_BAR = false
+//private const val SHOW_PROGRESS_BAR = true
+//private const val HIDE_PROGRESS_BAR = false
 
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
@@ -64,46 +64,51 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         binding.mainActivityRecyclerview.adapter = adapter
     }
 
-    override fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.Success -> {
-                showProgressBar(HIDE_PROGRESS_BAR)
-                val data = appState.data
-                if (data.isNullOrEmpty()) {
-                    showAlertDialog(
-                        getString(R.string.dialog_tittle_sorry),
-                        getString(R.string.empty_server_response_on_success)
-                    )
-                } else {
-                    adapter.setData(data)
-                }
-            }
-            is AppState.Loading -> {
-                showProgressBar(SHOW_PROGRESS_BAR)
-                if (appState.progress != null) {
-                    binding.progressBarHorizontal.visibility = View.VISIBLE
-                    binding.progressBarRound.visibility = View.GONE
-                    binding.progressBarHorizontal.progress = appState.progress
-                } else {
-                    binding.progressBarHorizontal.visibility = View.GONE
-                    binding.progressBarRound.visibility = View.VISIBLE
-                }
-            }
-            is AppState.Error -> {
-                showProgressBar(HIDE_PROGRESS_BAR)
-                showAlertDialog(getString(R.string.error_stub), appState.error.message)
-            }
-        }
+    override fun setDataToAdapter(data: List<Vocabulary>) {
+        adapter.setData(data)
     }
 
-    private fun showProgressBar(show: Boolean) = if (show) {
-        binding.loadingFrameLayout.visibility = View.VISIBLE
-    } else {
-        binding.loadingFrameLayout.visibility = View.GONE
-    }
+//    override fun renderData(appState: AppState) {
+//        when (appState) {
+//            is AppState.Success -> {
+//                showProgressBar(HIDE_PROGRESS_BAR)
+//                val data = appState.data
+//                if (data.isNullOrEmpty()) {
+//                    showAlertDialog(
+//                        getString(R.string.dialog_tittle_sorry),
+//                        getString(R.string.empty_server_response_on_success)
+//                    )
+//                } else {
+//                    adapter.setData(data)
+//                }
+//            }
+//            is AppState.Loading -> {
+//                showProgressBar(SHOW_PROGRESS_BAR)
+//                if (appState.progress != null) {
+//                    binding.progressBarHorizontal.visibility = View.VISIBLE
+//                    binding.progressBarRound.visibility = View.GONE
+//                    binding.progressBarHorizontal.progress = appState.progress
+//                } else {
+//                    binding.progressBarHorizontal.visibility = View.GONE
+//                    binding.progressBarRound.visibility = View.VISIBLE
+//                }
+//            }
+//            is AppState.Error -> {
+//                showProgressBar(HIDE_PROGRESS_BAR)
+//                showAlertDialog(getString(R.string.error_stub), appState.error.message)
+//            }
+//        }
+//    }
+//
+//    private fun showProgressBar(show: Boolean) = if (show) {
+//        binding.loadingFrameLayout.visibility = View.VISIBLE
+//    } else {
+//        binding.loadingFrameLayout.visibility = View.GONE
+//    }
 
     companion object {
         private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG =
             "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
     }
+
 }
