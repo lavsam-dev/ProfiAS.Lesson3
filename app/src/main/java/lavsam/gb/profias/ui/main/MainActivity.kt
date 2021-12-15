@@ -10,7 +10,9 @@ import lavsam.gb.profias.interactor.MainInteractor
 import lavsam.gb.profias.model.data.AppState
 import lavsam.gb.profias.model.data.Vocabulary
 import lavsam.gb.profias.ui.BaseActivity
+import lavsam.gb.profias.ui.DescriptionActivity
 import lavsam.gb.profias.ui.SearchDialogFragment
+import lavsam.gb.profias.utils.convertMeaningsToString
 import lavsam.gb.profias.utils.network.isOnline
 import lavsam.gb.profias.viewmodel.MainActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,7 +34,15 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
             override fun onItemClick(data: Vocabulary) {
-                Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
+                startActivity(
+                    DescriptionActivity.getIntent(
+                        this@MainActivity,
+                        data.text!!,
+                        convertMeaningsToString(data.meanings!!),
+                        data.meanings[0].imageUrl
+                    )
+                )
             }
         }
     private val onSearchClickListener: SearchDialogFragment.OnSearchClickListener =
@@ -110,5 +120,4 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG =
             "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
     }
-
 }

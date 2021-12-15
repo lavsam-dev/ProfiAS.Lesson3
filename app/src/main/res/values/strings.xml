@@ -18,4 +18,5 @@
     <string name="error_stub">Error</string>
     <string name="ErrorViewModelInit">The ViewModel should be initialised first</string>
     <string name="empty_text">\"\"</string>
+    <string name="menu_title_history">History</string>
 </resources>
